@@ -5,9 +5,13 @@ import java.util.Scanner;
 public class CricketsAndGrasshoppers {
 	//Prompts for game initialization
 	public static String setUpPrompts(int counter) {
-		String[] userPrompts = {"That was not a valid number! Please try again.","Please enter the number of pieces for each player (1-10): ", "Please enter the number of spaces in the middle (1-9):5"};
+		String[] userPrompts = {"That was not a valid number! Please try again.","Please enter the number of pieces for each player (1-10): ", "Please enter the number of spaces in the middle (1-9):"};
 		String prompt = userPrompts[counter];
 		return prompt;
+	}
+	
+	public static String gamePlayPrompts(int move, boolean canMove, String player) {
+		
 	}
 	//Requirement 1 of 6
 	public static int promptNumberReadLine(Scanner s, String prompt, int max) {
@@ -33,29 +37,43 @@ public class CricketsAndGrasshoppers {
 		
 	}
 	
+	
 	public static int[] createBoard(int piecesPerPlayer, int spacesInMiddle) {
-		int[] newGame;
-		for(int i = 0; i < piecesPerPlayer; i++) {
-			
+		int length = piecesPerPlayer + spacesInMiddle;
+		int[] newGame = new int[length + 1];
+		for(int i = 0; i < newGame.length; i++) {
+			if(i < spacesInMiddle ) {
+				newGame[i] = 1;
+			} else if(i >= piecesPerPlayer && i < (piecesPerPlayer - spacesInMiddle)) {
+				newGame[i] = 0;
+			} else {
+				newGame[i] = 2;
+			}
 		}
+		int i =0;
+		while(i < length) {System.out.print(newGame[i]); i++;}
+		return newGame;
 	}
 	
 	public static String boardToString(int[] board) {
-		String gameBoard = board;
-		
+		String gameBoard = "";
+		String newMove = "";
+		for(int i = 0; i < board.length; i++) {
+			if(board[i] == 1) {
+				newMove = "CC ";
+			} else if(board[i] == 2) {
+				newMove = "GG ";
+			} else {
+				newMove = ".. ";
+			}
+			gameBoard = gameBoard + newMove;
+		}
+		System.out.println(gameBoard);
+		return gameBoard;
 	}
 	
-	public static boolean canMove(int[] board, int player) {
-		if() {
-			
-			return true;
-		} else {
-			return false;
-		}
-	}
-	public static boolean move(int[] board, int player, int position) {
-		
-	}
+	
+	
 	
 	public static void main(String[] args) {
 		//Index for prompts Method
@@ -74,6 +92,12 @@ public class CricketsAndGrasshoppers {
 		//Grab spaces in the middle
 		max = 9;
 		int middleSpaces = promptNumberReadLine(userPrompt, setUpPrompts(index), max);
+		//Find total pieces
+		int playerPieces = player1 + player2;
+		//Create Board
+		int board[] = createBoard(playerPieces, middleSpaces);
+		String boardStatus = boardToString(board);
+		
 		
 		//
 	}
