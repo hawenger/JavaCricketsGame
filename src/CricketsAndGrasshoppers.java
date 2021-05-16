@@ -10,9 +10,7 @@ public class CricketsAndGrasshoppers {
 		return prompt;
 	}
 	
-	public static String gamePlayPrompts(int move, boolean canMove, String player) {
-		
-	}
+	
 	//Requirement 1 of 6
 	public static int promptNumberReadLine(Scanner s, String prompt, int max) {
 		String error = setUpPrompts(0);
@@ -39,19 +37,21 @@ public class CricketsAndGrasshoppers {
 	
 	
 	public static int[] createBoard(int piecesPerPlayer, int spacesInMiddle) {
-		int length = piecesPerPlayer + spacesInMiddle;
-		int[] newGame = new int[length + 1];
+		int[] newGame = new int[(piecesPerPlayer * 2) + spacesInMiddle];
+		System.out.println(piecesPerPlayer);
+		System.out.println(spacesInMiddle);
+		System.out.println(newGame.length);
 		for(int i = 0; i < newGame.length; i++) {
-			if(i < spacesInMiddle ) {
+			if(i < piecesPerPlayer) {
 				newGame[i] = 1;
-			} else if(i >= piecesPerPlayer && i < (piecesPerPlayer - spacesInMiddle)) {
-				newGame[i] = 0;
-			} else {
+			} else if( i >= piecesPerPlayer + spacesInMiddle) {
 				newGame[i] = 2;
+			} else {
+				newGame[i] = 0;
 			}
 		}
 		int i =0;
-		while(i < length) {System.out.print(newGame[i]); i++;}
+		while(i < newGame.length) {System.out.print(newGame[i]); i++;}
 		return newGame;
 	}
 	
@@ -72,9 +72,16 @@ public class CricketsAndGrasshoppers {
 		return gameBoard;
 	}
 	
-	
-	
-	
+	public static int[] gameBoardArray(int[] player1Array, int[] player2Array, int player2, int middleSpaces) {
+		int newArrayLength = (player1Array.length + player2Array.length) - middleSpaces;
+		int[] gameboardArray = new int[newArrayLength + 1];
+		System.arraycopy(player1Array, 0, gameboardArray , 0, (player1Array.length - 1));
+		System.arraycopy(player2Array, 0, gameboardArray, player1Array.length, (player2Array.length - middleSpaces));
+		for(int i = 0; i < newArrayLength; i ++) {
+			System.out.println(gameboardArray[i]);
+		}
+		return gameboardArray;
+	}
 	public static void main(String[] args) {
 		//Index for prompts Method
 		int index = 1;
@@ -86,20 +93,18 @@ public class CricketsAndGrasshoppers {
 		
 		//Grab player pieces count
 		int max = 10; // Max # pieces to pass to method
-		int player1 = promptNumberReadLine(userPrompt, setUpPrompts(index), max);
-		int player2 = promptNumberReadLine(userPrompt, setUpPrompts(index), max);
+		int piecesPerPlayer = promptNumberReadLine(userPrompt, setUpPrompts(index), max);
 		index++;
 		//Grab spaces in the middle
 		max = 9;
 		int middleSpaces = promptNumberReadLine(userPrompt, setUpPrompts(index), max);
-		//Find total pieces
-		int playerPieces = player1 + player2;
 		//Create Board
-		int board[] = createBoard(playerPieces, middleSpaces);
-		String boardStatus = boardToString(board);
-		
+		int board[] = createBoard(piecesPerPlayer,  middleSpaces);
+		//String boardStatus = boardToString(board);
+		String boardString = boardToString(board);
 		
 		//
 	}
+	
 }
 
