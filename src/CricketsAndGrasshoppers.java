@@ -5,19 +5,19 @@ import java.util.Scanner;
 public class CricketsAndGrasshoppers {
 	//Prompts for game initialization
 	public static String setUpPrompts(int counter) {
-		String[] userPrompts = {"That was not a valid number! Please try again.","Please enter the number of pieces for each player (1-10): ", "Please enter the number of spaces in the middle (1-9):"};
+		String[] userPrompts = {"That was not a valid number! Please try again.\n","Please enter the number of pieces for each player (1-10): ", "\nPlease enter the number of spaces in the middle (1-9): "};
 		String prompt = userPrompts[counter];
 		return prompt;
 	}
 	
+	//Prompts for game play
 	public static String movePrompts(int counter, int boardSize) {
-		String[] userPrompts = {"Crickets, please enter your move (1-" + boardSize + "):", "Grasshoppers, please enter your move (1-" + boardSize + "):" , "That space does not contain a piece you can move! Please try again."};
+		String[] userPrompts = {"\nCrickets, please enter your move (1-" + boardSize + "): ", "\nGrasshoppers, please enter your move (1-" + boardSize + "): " , "That space does not contain a piece you can move! Please try again.\n"};
 		String prompt = userPrompts[counter];
 		return prompt;
 	}
 	
-	
-	//Requirement 1 of 6
+	//Scanner and Prompt reader method
 	public static int promptNumberReadLine(Scanner s, String prompt, int max) {
 		String error = setUpPrompts(0);
 		while(true) {
@@ -41,10 +41,9 @@ public class CricketsAndGrasshoppers {
 		
 	}
 	
-	
+	//Create initial board
 	public static int[] createBoard(int piecesPerPlayer, int spacesInMiddle) {
 		int[] newGame = new int[(piecesPerPlayer * 2) + spacesInMiddle];
-		
 		for(int i = 0; i < newGame.length; i++) {
 			if(i < piecesPerPlayer) {
 				newGame[i] = 1;
@@ -54,11 +53,10 @@ public class CricketsAndGrasshoppers {
 				newGame[i] = 0;
 			}
 		}
-		//int i =0;
-		//while(i < newGame.length) {System.out.print(newGame[i]); i++;}
 		return newGame;
 	}
 	
+	//Turn board into a string
 	public static String boardToString(int[] board) {
 		String gameBoard = "";
 		String newMove = "";
@@ -76,43 +74,49 @@ public class CricketsAndGrasshoppers {
 		return gameBoard;
 	}
 	
-
-	
+	//Check for possible moves (win)
 	public static boolean canMove(int[] board, int player) {
 		for(int i = 0; i < board.length; i++) {
 			if(player == 1) {
-				if(board[i] == player && board[i + 1] == 0) {
+				if(i + 1 < board.length && board[i] == 1 && board[i + 1] == 0) {
 					return true;
-				} else if(board[i] == player && board[i+ 1] == 2 && board[i + 2] == 0) {
+				} else if(i + 2 < board.length && (board[i] == 1 && board[i+ 1] == 2) && board[i + 2] == 0) {
+					return true;
+				}
+			} else if (player == 2) {
+				if(i - 1 >= 0 && board[i] == 2 && board[i - 1] == 0) {
+					return true;
+				} else if(i - 2 >= 0 && (board[i] == 2 && board[i - 1] == 1) && board[i - 2] == 0) {
 					return true;
 				}
 			} else {
-				if(board[i] == player && board[i - 1] == 0) {
-					return true;
-				} else if(board[i] == player && board[i - 1] == 1 && board[i - 2] == 0) {
-					return true;
-				}
+				return false;
 			}
 		}
 		return false;
 	}
 	
+	//Check if move is valid
 	public static boolean move(int[] board, int player, int position) {
-		int index = 0;
 		position = position - 1;
-		if(board[position] == player) {
+		if((position >= 0 && position < board.length) && board[position] == player) {
 			if(player == 1) {
-				if(board[position + 1] == 0) {
+				if(position + 1 < board.length && board[position + 1] == 0) {
+					board = boardMove(board, position, player);
 					return true;
-				} else if(board[position + 1] == 2 && board[position + 2] == 0) {
+				} else if(position + 2 < board.length && board[position + 1] == 2 && board[position + 2] == 0) {
+					board = boardMove(board, position, player);
 					return true;
 				} else {
 					return false;
 				}
-			} else {
-				if(board[position - 1] == 0) {
+			}
+			if(player == 2) {
+				if(position - 1 >= 0 && board[position - 1] == 0) {
+					board = boardMove(board, position, player);
 					return true;
-				} else if(board[position - 1] == 1 && board[position - 2] == 0) {
+				} else if(position - 2 >= 0 && board[position - 2] == 0 && board[position - 1] == 1) {
+					board = boardMove(board, position, player);
 					return true;
 				} else {
 					return false;
@@ -121,65 +125,119 @@ public class CricketsAndGrasshoppers {
 		} else {
 			return false;
 		}
+		return false;
+	}
+	
+	//Return new board in game play
+	public static int[] boardMove(int[] board, int position, int player) {
+		
+		if(player == 1) {
+			if(board[position + 1] == 0) {
+				board[position + 1] = 1;
+				board[position] = 0;
+			} else { 
+				board[position + 2] = 1;
+				board[position] = 0;
+			}
+			
+		} else {
+			
+			if(board[position - 1] == 0) {
+				board[position - 1] = 2;
+				board[position] = 0;
+			} else {
+				board[position - 2] = 2;
+				board[position] = 0;
+			}
+		}
+		
+		return board;
 	}
 	
 	public static void main(String[] args) {
-		//Index for prompts Method
+	
+	//INITIALIZE GAME
+		
+		//Index for prompts method
 		int index = 1;
+		
 		//Initialize Scanner
 		Scanner userPrompt = new Scanner(System.in);
 		
-		//Grab Step 1/6 prompt
-		//String prompt = prompts();
-		
 		//Grab player pieces count
-		int max = 10; // Max # pieces to pass to method
+		int max = 10;
 		int piecesPerPlayer = promptNumberReadLine(userPrompt, setUpPrompts(index), max);
 		index++;
+		
 		//Grab spaces in the middle
 		max = 9;
 		int middleSpaces = promptNumberReadLine(userPrompt, setUpPrompts(index), max);
-		
-		int boardSize = middleSpaces + piecesPerPlayer;
+		int boardSize = middleSpaces + (piecesPerPlayer * 2);
 		
 		//Create Board and moves loop
-		max = 5;
-		while(true) {
+		max = boardSize;
 		int board[] = createBoard(piecesPerPlayer,  middleSpaces);
-		//String boardStatus = boardToString(board);
 		String boardString = boardToString(board);
-		//Print string to screen before each move
-		System.out.println(boardString);
+		System.out.println("\n" + boardString);
+	
+	//GAME PLAY LOOP
 		
-		//CRCIKET MOVES
-		
-		//Check if crickets can move
-		boolean isGrasshopperWin = canMove(board, 1);
-		if(!isGrasshopperWin) {
-			System.out.println("Grasshoppers Win!");
-			break;
-		}
-		System.out.println(isGrasshopperWin);
-		int cricketMove = promptNumberReadLine(userPrompt, movePrompts(0, boardSize), max);
-		boolean isPossibleCricket = move(board, 1, cricketMove);
-		if(isPossibleCricket) {
-			//int board[] = 
-		}
-		System.out.println(isPossibleCricket);
+		do {
+			
+		//CRICKET MOVES
+			
+			//Variable for cricket moves prompt
+			int cricketMove = 0; 
+			//Variable to confirm valid move
+			boolean isPossibleCricket = false; 
+			
+			//Loop until valid move entered
+			while(!isPossibleCricket) {
+				cricketMove = promptNumberReadLine(userPrompt, movePrompts(0, boardSize), max);
+				isPossibleCricket = move(board, 1, cricketMove);
+			}
+			//Set new board
+			//if(isPossibleCricket) {
+				//board = boardMove(board, cricketMove, 1); 
+				boardString = boardToString(board);
+			//}
+			//Check if Grasshopper can move
+			boolean isCricketWin = canMove(board, 2);
+			if(!isCricketWin) {
+				System.out.println("Crickets Win!\n");
+				break;
+			} else {
+				System.out.println("\n" + boardString);
+			}
+
 		
 		//GRASSHOPPER MOVES
-		boolean isCricketWin = canMove(board, 2);
-		if(!isCricketWin) {
-			System.out.println("Crickets Win!");
-			break;
-		}
-		System.out.println(isCricketWin);
-		int grasshopperMove = promptNumberReadLine(userPrompt, movePrompts(1, boardSize), max);
-		boolean isPossibleGrasshopper = move(board, 2, grasshopperMove);
-		System.out.println(isPossibleGrasshopper);
 		
-		
-		}
+			//Variable for grasshopper moves prompt
+			int grasshopperMove = 0;
+			//Variable to confirm valid move
+			boolean isPossibleGrasshopper = false;
+			
+			//Loop until valid move entered
+			while(!isPossibleGrasshopper) {
+				grasshopperMove = promptNumberReadLine(userPrompt, movePrompts(1, boardSize), max);
+				isPossibleGrasshopper = move(board, 2, grasshopperMove);
+			}
+			//Set new board
+			//if(isPossibleGrasshopper) {
+				//board = boardMove(board, grasshopperMove, 2);
+				boardString = boardToString(board);
+			//}
+			//Check if cricket can move
+			boolean isGrasshopperWin = canMove(board, 1);
+				if(!isGrasshopperWin) {
+					System.out.println("Grasshoppers Win!");
+						break;
+				} else {
+					System.out.println("\n" + boardString);
+				}
+				
+		} while(true);
 		
 	}
 	
